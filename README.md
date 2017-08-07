@@ -27,9 +27,10 @@ The order  webpage should be accessed by the tablet in the preparation area
    + You'll see a bunch of information, but the line you want to look for is "IPv4 Address." The number across from that text is your   local IP address.
 
  * Mac:
- + Open System Preferences (via the Apple menu at the top lefthand corner of your screen).
- + When System Preferences opens, click on the icon labeled Network.
- + You should see a few options on the left with labels like Wi-Fi, Ethernet, Bluetooth, etc. The ones with green dots have IP addresses assigned to them. Click the one on top (if it isn't already selected) and look to the right. There should be a sentence that reads something like "Wi-Fi is connected to Chocolate and has the IP address 192.168.1.102." The number at the end of that sentence is your local IP address.
+ 
+   + Open System Preferences (via the Apple menu at the top lefthand corner of your screen).
+   + When System Preferences opens, click on the icon labeled Network.
+   + You should see a few options on the left with labels like Wi-Fi, Ethernet, Bluetooth, etc. The ones with green dots have IP addresses assigned to them. Click the one on top (if it isn't already selected) and look to the right. There should be a sentence that reads something like "Wi-Fi is connected to Chocolate and has the IP address 192.168.1.102." The number at the end of that sentence is your local IP address.
      
 5) On the tablet computer that takes the order, open the web browser and go to the ip addres from step 4, and add register.html to the end of it (192.168.0.1/register.html)
 
