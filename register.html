@@ -1,0 +1,375 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Online Register</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+
+    <link href="css/justified-nav.css" rel="stylesheet">
+
+
+    <script src="js/ie-emulation-modes-warning.js"></script>
+      <script
+  src="http://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  
+      <script>
+	ordernumber=1
+    function reset() {
+        document.getElementById('oldfashioned').value = 0;
+        document.getElementById('glazed').value = 0;
+        document.getElementById('chocolate').value = 0;
+        document.getElementById('cinnamon').value = 0;
+        document.getElementById('blueberrylemon').value = 0;
+        document.getElementById('strawberry').value = 0;
+		document.getElementById('ordername').value = "";
+		document.getElementById('needmore').innerHTML = "";
+        update();
+      }       
+     
+	function submit(){
+		if ((amount % 4 ==0 && amount > 0)|| (amount % 6 ==0 && amount > 0)) {
+			var orderarray = [];
+
+			numberoldfashioned = document.getElementById('oldfashioned').value
+			numberglazed = document.getElementById('glazed').value
+			numberchocolate = document.getElementById('chocolate').value
+			numberstrawberry = document.getElementById('strawberry').value
+			numbercinnamon = document.getElementById('cinnamon').value
+			numberblueberrylemon = document.getElementById('blueberrylemon').value
+
+			
+			if (numberoldfashioned>0){orderarray.push("Old-Fashioned: "+numberoldfashioned.toString())}
+			if (numberglazed>0){orderarray.push("Glazed: "+numberglazed.toString())}
+			if (numberchocolate>0){orderarray.push("Chocolate: "+numberchocolate.toString())}
+			if (numberstrawberry>0){orderarray.push("Strawberry: "+numberstrawberry.toString())}
+			if (numbercinnamon>0){orderarray.push("Cinnamon: "+numbercinnamon.toString())}
+			if (numberblueberrylemon>0){orderarray.push("Blueberrylemon: "+numberblueberrylemon.toString())}
+			
+			var content = orderarray.join('\r\n')
+			var ordername = document.getElementById('ordername').value	   
+			$.ajax({
+			data: {'content': content, 'id': ordernumber, 'ordername': ordername },
+			url: 'update.php',
+			method: 'POST', // or GET
+			success: function(msg) {
+				ordernumber = ordernumber + 1;
+				reset();
+				}
+			});
+		}		
+	}
+    function update() {
+          amount = calculatetotal();
+          calculatedue(amount);
+      }      
+          
+      function increaseoldfashioned() {
+          document.getElementById('oldfashioned').value = parseFloat(document.getElementById('oldfashioned').value) + parseFloat(1)
+          update() 
+          
+      }
+          
+      function increaseglazed() {
+          document.getElementById('glazed').value = parseFloat(document.getElementById('glazed').value) + parseFloat(1)
+          update() 
+      }
+          
+      function increasechocolate() {
+          document.getElementById('chocolate').value = parseFloat(document.getElementById('chocolate').value) + parseFloat(1)
+          update() 
+      }
+          
+       function increasestrawberry() {
+          document.getElementById('strawberry').value = parseFloat(document.getElementById('strawberry').value) + parseFloat(1)
+           update() 
+          
+      }
+          
+      function increasecinnamon() {
+          document.getElementById('cinnamon').value = parseFloat(document.getElementById('cinnamon').value) + parseFloat(1)
+          update() 
+      }
+          
+      function increaseblueberrylemon() {
+          document.getElementById('blueberrylemon').value = parseFloat(document.getElementById('blueberrylemon').value) + parseFloat(1)
+          update() 
+      }
+                   
+          
+          
+        function decreaseoldfashioned() {
+          current = document.getElementById('oldfashioned').value
+          if (current > 0){
+            document.getElementById('oldfashioned').value = parseFloat(document.getElementById('oldfashioned').value) - parseFloat(1)
+              update() 
+          }
+      }
+          
+      function decreaseglazed() {
+           current = document.getElementById('glazed').value
+          if (current > 0){
+            document.getElementById('glazed').value = parseFloat(document.getElementById('glazed').value) - parseFloat(1)
+              update() 
+          }
+      }
+          
+      function decreasechocolate() {
+           current = document.getElementById('chocolate').value
+          if (current > 0){
+            document.getElementById('chocolate').value = parseFloat(document.getElementById('chocolate').value) - parseFloat(1)
+              update() 
+          }
+      }  
+          
+                    
+      function decreasestrawberry() {
+           current = document.getElementById('strawberry').value
+          if (current > 0){
+            document.getElementById('strawberry').value = parseFloat(document.getElementById('strawberry').value) - parseFloat(1)
+            update() 
+          }
+      }    
+          
+                    
+      function decreasecinnamon() {
+           current = document.getElementById('cinnamon').value
+          if (current > 0){
+            document.getElementById('cinnamon').value = parseFloat(document.getElementById('cinnamon').value) - parseFloat(1)
+            update() 
+          }
+      }    
+          
+                    
+      function decreaseblueberrylemon() {
+           current = document.getElementById('blueberrylemon').value
+          if (current > 0){
+            document.getElementById('blueberrylemon').value = parseFloat(document.getElementById('blueberrylemon').value) - parseFloat(1)
+              update() 
+          }
+      }    
+      
+          
+    function calculatetotal() {
+        total = parseFloat(document.getElementById('oldfashioned').value) + parseFloat(document.getElementById('glazed').value) + parseFloat(document.getElementById('chocolate').value) + parseFloat(document.getElementById('strawberry').value) + parseFloat(document.getElementById('cinnamon').value) + parseFloat(document.getElementById('blueberrylemon').value);
+        document.getElementById('totalamount').innerHTML = total;
+        return total;
+    }
+          
+       function calculatedue(amount) {
+           //4 for $4
+           //6 for $5
+           //8 for $6
+           //12 for $8
+        if (amount == 0){ 
+            document.getElementById('totalcost').innerHTML  = 0;
+			document.getElementById('needmore').innerHTML = "";
+			}
+			
+        else if (amount % 4 ==0 || amount % 6 ==0) {
+            document.getElementById('needmore').innerHTML = "";
+           if (amount >=12 ){
+               due = Math.floor(amount / 12) * 8 
+               remainder = amount % 12
+               
+               if (remainder  == 8){
+                    document.getElementById('totalcost').innerHTML  =  due + 6;
+               }
+               if (remainder  == 6){
+                    document.getElementById('totalcost').innerHTML =  due + 5;
+               }
+             if (remainder  == 4){
+                    document.getElementById('totalcost').innerHTML  =  due + 4;
+               }
+           }
+               
+           else if (amount ==8 ){
+                document.getElementById('totalcost').innerHTML = 6;
+           }
+           else if (amount ==6 ){
+                document.getElementById('totalcost').innerHTML = 5;
+           }
+           else{
+               document.getElementById('totalcost').innerHTML  = 4; 
+           }   
+           
+           
+       } else {
+        
+         needed1 = 4 - (amount % 4);
+         needed2 = 6 - (amount % 6) ; 
+           document.getElementById('needmore').innerHTML = "You need to add at least "+ Math.min(needed1,needed2) +" more donuts";
+       }
+       }
+      </script>
+      
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+    <body>
+        <div class="container">
+            <div class="row" style="text-align:center">
+           
+                <div class="col-xs-4">
+                    <button type="button" style="width:150px" class="btn btn-primary" onclick=increaseoldfashioned()> Old-Fashioned</button>
+                    
+                </div>
+        
+                <div class="col-xs-4">
+                    <button type="button" style="width:150px" class="btn btn-primary" onclick=increaseglazed()> Glazed</button>
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" style="width:150px" class="btn btn-primary" onclick= increasechocolate()>Chocolate</button>
+        
+                </div>
+            </div>
+            
+            
+                <div class="row" style="text-align:center">
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-default btn-sm" onclick=decreaseoldfashioned()>
+                        <span class="glyphicon glyphicon-arrow-down" ></span>
+                    </button>
+                    <input style="text-align: center; margin-top:15px;width:55px" id="oldfashioned" onChange="update()" value=0>
+                    <button type="button" class="btn btn-default btn-sm" onclick=increaseoldfashioned()>
+                        <span class="glyphicon glyphicon-arrow-up" ></span>
+                    </button>
+                </div>
+        
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-default btn-sm" onclick=decreaseglazed()>
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                    </button>
+                    <input style="text-align: center;margin-top:15px;width:55px" id="glazed" onChange="update()" value=0>
+                    <button type="button" class="btn btn-default btn-sm" onclick=increaseglazed()>
+                        <span class="glyphicon glyphicon-arrow-up" ></span>
+                    </button>
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-default btn-sm" onclick=decreasechocolate()>
+                        <span class="glyphicon glyphicon-arrow-down" ></span>
+                    </button>
+                    <input style="text-align: center; margin-top:15px;width:55px" id="chocolate" onChange="update()" value=0>
+                    <button type="button" class="btn btn-default btn-sm" onclick=increasechocolate()>
+                        <span class="glyphicon glyphicon-arrow-up" ></span>
+                    </button>
+        
+                </div>
+            </div> 
+            
+            
+            
+            
+                        <div class="row" style="text-align:center;margin-top:55px">
+           
+                <div class="col-xs-4">
+                    <button type="button" style="width:150px" class="btn btn-primary" onclick=increasestrawberry()> Strawberry</button>
+                    
+                </div>
+        
+                <div class="col-xs-4">
+                    <button type="button" style="width:150px" class="btn btn-primary" onclick=increasecinnamon()> Cinnamon</button>
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" style="width:150px" class="btn btn-primary" onclick= increaseblueberrylemon()>Blueberry-Lemon</button>
+        
+                </div>
+            </div>
+            
+            
+                <div class="row" style="text-align:center">
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-default btn-sm" onclick=decreasestrawberry()>
+                        <span class="glyphicon glyphicon-arrow-down" ></span>
+                    </button>
+                    <input style="text-align: center; margin-top:15px;width:55px" id="strawberry" value=0 onChange="update()">
+                    <button type="button" class="btn btn-default btn-sm" onclick=increasestrawberry()>
+                        <span class="glyphicon glyphicon-arrow-up" ></span>
+                    </button>
+                </div>
+        
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-default btn-sm" onclick=decreasecinnamon()>
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                    </button>
+                    <input style="text-align: center;margin-top:15px;width:55px" id="cinnamon" value=0 onChange="update()">
+                    <button type="button" class="btn btn-default btn-sm" onclick=increasecinnamon()>
+                        <span class="glyphicon glyphicon-arrow-up" ></span>
+                    </button>
+                </div>
+                <div class="col-xs-4">
+                    <button type="button" class="btn btn-default btn-sm" onclick=decreaseblueberrylemon()>
+                        <span class="glyphicon glyphicon-arrow-down" ></span>
+                    </button>
+                    <input style="text-align: center; margin-top:15px;width:55px" id="blueberrylemon" value=0 onChange="update()">
+                    <button type="button" class="btn btn-default btn-sm" onclick=increaseblueberrylemon()>
+                        <span class="glyphicon glyphicon-arrow-up" ></span>
+                    </button>
+        
+                </div>
+            </div> 
+            
+            <div class="row" style="margin-top:25px;">
+                <div class="col-xs-4"></div>
+                <div class="col-xs-4" style="text-align:center">
+                    <button type="button" class="btn btn-danger" onclick="reset()">RESET</button>
+                </div>
+                <div class="col-xs-4"></div>
+            </div>    
+            
+            
+             
+              <div class="row" style="margin-top:55px">
+                <hr style= "border: 1px solid #000;">
+                <div class="col-xs-3" style="border: 1px solid #000;text-align:left">
+                    # Donuts:
+                </div>
+                <div class="col-xs-2" id="totalamount" style="border: 1px solid #000;text-align:center">
+                    0                           
+                </div>
+            </div>
+            
+              <div class="row">
+                <div class="col-xs-3" style="border: 1px solid #000;text-align:left">
+                    Total Cost:
+                </div>
+                <div class="col-xs-2" id="totalcost" style="border: 1px solid #000;text-align:center">
+                    0                           
+                </div>
+            </div>
+			
+            <div class="row">
+                <div class="col-xs-5" id="needmore">
+                </div>
+            </div>
+            
+                <div class="row"  style="margin-top:25px;">
+                <div class="col-xs-12" style="margin-left:-10px" >
+					Name: <input style="margin-top:15px;" id="ordername" value="">
+
+                </div>
+            </div>
+			   <div class="row"  style="margin-top:25px">
+                <div class="col-xs-3">
+					<button type="button" class="btn btn-success" onclick=submit()>Submit</button>
+
+                </div>
+            </div>
+                                
+
+        </div>
+  
+</body>
+
+</html

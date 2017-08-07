@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Order List</title>
+    <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+
+	<script type="text/javascript">
+        // <![CDATA[
+        $(document).ready(function(){
+            // Remove the "loading…" list entry
+            $('ul#messages > li').remove();
+            
+			
+			
+            function formatAMPM(date) {
+			  var hours = date.getHours();
+			  var minutes = date.getMinutes();
+			  var seconds = date.getSeconds();
+			  var ampm = hours >= 12 ? 'pm' : 'am';
+			  hours = hours % 12;
+			  hours = hours ? hours : 12; // the hour '0' should be '12'
+			  minutes = minutes < 10 ? '0'+minutes : minutes;
+			  seconds = seconds < 10 ? '0'+seconds : seconds;
+			  var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+			  return strTime;
+			}
+            // Poll-function that looks for new messages
+            poll_for_new_messages = function(){
+                $.ajax({url: 'messages.json', dataType: 'json', ifModified: true, timeout: 2000, success: function(messages, status){
+                    // Skip all responses with unmodified data
+                    if (!messages)
+                        return;
+
+                    
+                    // Get the ID of the last inserted message or start with -1 (so the first message from the server with 0 will
+                    // automatically be shown).
+                    var last_message_id = $('ul#messages').data('last_message_id');
+                    if (last_message_id == null)
+                        last_message_id = -1;
+                    
+                    // Add a list entry for every incomming message, but only if we not already inserted it (hence the check for
+                    // the newer ID than the last inserted message).
+                    for(var i = 0; i < messages.length; i++)
+                    {
+                        var msg = messages[i];
+                        if (msg.id > last_message_id)
+                        {
+                            var date = new Date(msg.time * 1000);
+							var readabletime = formatAMPM(date);
+								
+							
+                            $('<li onclick="removecontent(this)" id="' + msg.id + '">').text(msg.content).
+								prepend( $('<small />').text("Order Name: " + msg.ordername) ).
+								prepend( $('<small />').text(readabletime) ).append( $('<hr />')).
+                                appendTo('ul#messages');
+                            $('ul#messages').data('last_message_id', msg.id);
+                        }
+                    }
+                    
+                    // Remove all but the last 50 messages in the list to prevent browser slowdown with extremely large lists
+                    // and finally scroll down to the newes message.
+                    $('ul#messages > li').slice(0, -50).remove();
+                    $('ul#messages').scrollTop( $('ul#messages').get(0).scrollHeight );
+                }});
+            };
+            
+            // Kick of the poll function and repeat it every two seconds
+            poll_for_new_messages();
+            setInterval(poll_for_new_messages, 2000);
+        });
+        // ]]>
+    </script>
+    <style type="text/css">
+        html { margin: 0em; padding: 0; }
+        body { margin: 2em; padding: 0; font-family: sans-serif; font-size: medium; color: #333; }
+        h1 { margin: 0; padding: 0; font-size: 2em; }
+        p.subtitle { margin: 0; padding: 0 0 0 0.125em; font-size: 0.77em; color: gray; }
+        
+        ul#messages { overflow: auto; height: 15em; margin: 1em 0; padding: 0 3px; list-style: none; border: 1px solid gray; }
+        ul#messages li { margin: 0.35em 0; padding: 0; }
+        ul#messages li small { display: block; font-size: 0.75em; color: gray; }
+        ul#messages li.pending { color: #aaa; }
+        
+        form { font-size: 1em; margin: 1em 0; padding: 0; }
+        form p { position: relative; margin: 0.5em 0; padding: 0; }
+        form p input { font-size: 1em; }
+        form p input#name { width: 10em; }
+        form p button { position: absolute; top: 0; right: -0.5em; }
+        
+        ul#messages, form p, input#content { width: 40em; }
+        
+        pre { font-size: 0.77em; }
+    </style>
+    <meta name="author" content="Stephan Soller" />
+</head>
+<body>
+
+<h1>Order List</h1>
+
+<ul id="messages">
+    <li>loading…</li>
+</ul>
+
+<div class="row"  style="margin-top:25px">
+	<div class="col-xs-3">
+		<button type="button" class="btn btn-success" onclick="clearcontents()">Clear All</button>
+	</div>
+</div>
+    <script>
+
+			function clearcontents() {
+			$.ajax({
+			url: 'clearcontents.php',
+			method: 'POST', // or GET
+			});
+			document.getElementById('messages').innerHTML = "";
+			}
+			
+			
+			function removecontent(exampleElement) {
+			$(exampleElement).remove();
+			$.ajax({
+			data:{'id' : exampleElement.id},
+			dataType: 'text',
+			url: 'revise.php',
+			type: 'POST',
+			success: function(msg) {
+				return;
+				}
+			})
+			};
+	</script>
+
+</body>
+</html>
