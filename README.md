@@ -3,11 +3,11 @@
 ## Purpose
 This repository contains a collection of scripts to facilitate the sending of food orders from the point of sale to the point of preparation
 
-All scripts should be hosted on a computer/server capable of hosting php scripts.
+All scripts should be hosted on a computer/server capable of running PHP scripts.
 
-The register webpage should be accessed by the tablet taking the order from the customer
+The register.html webpage should be accessed by the tablet taking the order from the customer
 
-The order  webpage should be accessed by the tablet in the preparation area
+The orders.html  webpage should be accessed by the tablet in the preparation area
 
 ## Requirements
 1) A computer/server to serve as the main node and host the files
